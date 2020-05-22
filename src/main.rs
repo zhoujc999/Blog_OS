@@ -2,6 +2,7 @@
 #![no_main]
 
 use core::panic::PanicInfo;
+mod vga_buffer;
 
 /// This function is called on panic.
 #[panic_handler]
@@ -11,6 +12,12 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    use core::fmt::Write;
+    vga_buffer::WRITER.lock().write_str("Hello again").unwrap();
+    write!(vga_buffer::WRITER.lock(), "! Some numbers: {} {}", 42, 1.337).unwrap();
+
+    // this function is the entry point, since the linker looks for a function
+    // named `_start` by default
     loop {}
 }
 
